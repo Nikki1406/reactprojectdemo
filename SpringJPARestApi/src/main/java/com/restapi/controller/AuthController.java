@@ -42,7 +42,7 @@ public class AuthController {
                     existing.getRole()
             );
             ResponseCookie cookie = ResponseCookie.from("jwt", token)
-                    .httpOnly(true)
+                    .httpOnly(true)                                                                                                                                                                        
                     .secure(false)
                     .path("/")
                     .maxAge(86400)
@@ -61,7 +61,7 @@ public class AuthController {
         ResponseCookie cookie = ResponseCookie.from("jwt", "")
                 .httpOnly(true)
                 .secure(false)
-                .path("/")
+                .path("/")            
                 .maxAge(0)
                 .sameSite("Lax")
                 .build();
