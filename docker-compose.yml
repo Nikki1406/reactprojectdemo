@@ -29,11 +29,11 @@ services:
     depends_on:
       mysql:
         condition: service_healthy
-  frontend:
+  Frontend:
     build:
-      context: ./frontend
+      context: ./Frontend
       dockerfile: Dockerfile
-    container_name: react-frontend
+    container_name: react-Frontend
     ports:
       - "3000:80"
     depends_on:
