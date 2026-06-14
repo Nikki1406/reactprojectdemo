@@ -15,6 +15,7 @@ services:
       timeout: 5s
       retries: 10
       start_period: 30s
+
   backend:
     build:
       context: ./SpringJPARestApi
@@ -29,6 +30,7 @@ services:
     depends_on:
       mysql:
         condition: service_healthy
+
   frontend:
     build:
       context: ./frontend
@@ -38,5 +40,6 @@ services:
       - "3000:80"
     depends_on:
       - backend
+
 volumes:
   mysql-data:
