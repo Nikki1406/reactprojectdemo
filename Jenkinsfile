@@ -18,7 +18,7 @@ pipeline {
         stage('Remote Deployment via SSH') {
             steps {
                 // Securely use the SSH credential we saved in Jenkins
-                sshAgent(credentials: ['ec2-ssh-key']) {
+                sshagent(credentials: ['ec2-ssh-key']) {
                     
                     // 1. Tell the live EC2 instance to navigate into the repo, pull changes, and rebuild
                     bat """
