@@ -16,7 +16,7 @@ pipeline {
                         @echo off
                         :: Use SSH to run commands directly on your Linux EC2 instance
                         :: Replace 1.2.3.4 with your actual EC2 Public IP address
-                        ssh -i "%EC2_KEY%" -o StrictHostKeyChecking=no ubuntu@44.208.22.14"cd ~/reactprojectdemo && git fetch origin && git reset --hard origin/main && docker compose down && docker compose up -d --build"
+                        ssh -i "%EC2_KEY%" -o StrictHostKeyChecking=no ubuntu@44.208.22.14 "cd ~/reactprojectdemo && git fetch origin && git reset --hard origin/main && docker compose down && docker compose up -d --build"
                     """
                 }
             }
