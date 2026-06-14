@@ -10,12 +10,19 @@ pipeline {
 
         stage('Remote Deployment via SSH') {
             steps {
-                // This safely fetches your .pem file path and puts it in the $EC2_KEY variable
+                // Securely fetches your .pem file from Jenkins credentials
                 withCredentials([file(credentialsId: 'ec2-private-key', variable: 'EC2_KEY')]) {
                     bat """
                         @echo off
-                        :: Use SSH to run commands directly on your Linux EC2 instance
-                        :: Replace 1.2.3.4 with your actual EC2 Public IP address
+                        :: 1. Fix Windows file permissions to make the .pem key secure
+                        icacls "%EC2_KEY%" /c /t /inheritance:d
+                        icacls "%EC2_KEY%" /c /t /remove *S-1-5-32-545
+                        icacls "%EC2_KEY%" /c /t /remove "Users"
+
+                        :: 2. Grant exclusive full control to the user executing the build
+                        icacls "%EC2_KEY%" /grant:r "%USERNAME%":(F)
+
+                        :: 3. Execute the remote deployment commands on your AWS EC2 Instance
                         ssh -i "%EC2_KEY%" -o StrictHostKeyChecking=no ubuntu@44.208.22.14 "cd ~/reactprojectdemo && git fetch origin && git reset --hard origin/main && docker compose down && docker compose up -d --build"
                     """
                 }
@@ -25,10 +32,10 @@ pipeline {
     
     post {
         success {
-            echo 'Deployment completed successfully!'
+            echo 'Deployment completed successfully! Your live site is updated.'
         }
         failure {
-            echo 'Deployment failed. Check the logs.'
+            echo 'Deployment failed. Check the Jenkins console logs.'
         }
     }
 }
