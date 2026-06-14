@@ -10,7 +10,6 @@ pipeline {
 
         stage('Remote Deployment via SSH') {
             steps {
-                // Securely fetches your .pem file from Jenkins credentials
                 withCredentials([file(credentialsId: 'ec2-private-key', variable: 'EC2_KEY')]) {
                     bat """
                         @echo off
@@ -22,8 +21,8 @@ pipeline {
                         :: 2. Grant exclusive full control to the user executing the build
                         icacls "%EC2_KEY%" /grant:r "%USERNAME%":(F)
 
-                        :: 3. Execute the remote deployment commands on your AWS EC2 Instance
-                        ssh -i "%EC2_KEY%" -o StrictHostKeyChecking=no ubuntu@44.208.22.14 "cd ~/reactprojectdemo && git fetch origin && git reset --hard origin/main && docker compose down && docker compose up -d --build"
+                        :: 3. Execute remote deployment forcing Docker to completely ignore old cached code layers
+                        ssh -i "%EC2_KEY%" -o StrictHostKeyChecking=no ubuntu@44.208.22.14 "cd ~/reactprojectdemo && git fetch origin && git reset --hard origin/main && docker compose down && docker compose up -d --build --no-cache"
                     """
                 }
             }
