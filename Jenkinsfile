@@ -21,13 +21,12 @@ pipeline {
                         :: 2. Grant exclusive full control to the user executing the build
                         icacls "%EC2_KEY%" /grant:r "%USERNAME%":(F)
 
-                        :: 3. Execute remote deployment forcing Docker to completely ignore old cached code layers
-                        ssh -i "%EC2_KEY%" -o StrictHostKeyChecking=no ubuntu@44.208.22.14 "cd ~/reactprojectdemo && git fetch origin && git reset --hard origin/main && docker compose down && docker compose up -d --build --no-cache"
+                        :: 3. Pull new code, tear down old containers, build fresh with NO cache, and spin up
+                        ssh -i "%EC2_KEY%" -o StrictHostKeyChecking=no ubuntu@44.208.22.14 "cd ~/reactprojectdemo && git fetch origin && git reset --hard origin/main && docker compose down && docker compose build --no-cache && docker compose up -d"
                     """
                 }
             }
         }
-    }
     
     post {
         success {
